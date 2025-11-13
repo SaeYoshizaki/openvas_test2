@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
 import os
 import time
 from gvm.connections import UnixSocketConnection
-from gvm.protocols.gmp import Gmp
+from gvm.protocols.gmp import GMP
 from gvm.transforms import EtreeCheckCommandTransform
 
 GMP_USER = os.environ["GMP_USER"]
@@ -12,12 +13,14 @@ REPORT_DIR = os.environ.get("REPORT_DIR", "openvas_reports")
 POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", "10"))
 TASK_NAME_PREFIX = os.environ.get("TASK_NAME_PREFIX", "GitHub Actions Scan")
 
+
 def connect_gmp():
-    conn = UnixSocketConnection(path=SOCKET_PATH)
+    connection = UnixSocketConnection(path=SOCKET_PATH)
     transform = EtreeCheckCommandTransform()
-    gmp = Gmp(connection=conn, transform=transform)
+    gmp = GMP(connection=connection, transform=transform)
     gmp.authenticate(GMP_USER, GMP_PASSWORD)
     return gmp
+
 
 def main():
     with connect_gmp() as gmp:
@@ -73,6 +76,7 @@ def main():
         with open(outfile, "w", encoding="utf-8") as f:
             f.write(xml_string)
         print("Saved:", outfile)
+
 
 if __name__ == "__main__":
     main()
