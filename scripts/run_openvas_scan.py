@@ -21,7 +21,11 @@ def main():
         gmp.authenticate(GMP_USER, GMP_PASSWORD)
 
         port_lists = gmp.get_port_lists(filter_string='name="OpenVAS Default"')
-        port_list_id = port_lists.xpath("port_list/@id")[0]
+        port_list_ids = port_lists.xpath("port_list/@id")
+        if not port_list_ids:
+            port_lists = gmp.get_port_lists()
+            port_list_ids = port_lists.xpath("port_list/@id")
+        port_list_id = port_list_ids[0]
 
         target_name = f"GA Target: {SCAN_TARGETS}"
         targets = gmp.get_targets(filter_string=f'name="{target_name}"')
@@ -39,7 +43,11 @@ def main():
             target_id = resp.get("id")
 
         configs = gmp.get_scan_configs(filter_string='name="Full and fast"')
-        config_id = configs.xpath("scan_config/@id")[0]
+        config_ids = configs.xpath("scan_config/@id")
+        if not config_ids:
+            configs = gmp.get_scan_configs()
+            config_ids = configs.xpath("scan_config/@id")
+        config_id = config_ids[0]
 
         task_name = f"{TASK_NAME_PREFIX} ({SCAN_TARGETS})"
         task_resp = gmp.create_task(
