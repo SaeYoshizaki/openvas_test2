@@ -14,16 +14,13 @@ POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", "10"))
 TASK_NAME_PREFIX = os.environ.get("TASK_NAME_PREFIX", "GitHub Actions Scan")
 
 
-def connect_gmp():
+def main():
     connection = UnixSocketConnection(path=SOCKET_PATH)
     transform = EtreeCheckCommandTransform()
-    gmp = GMP(connection=connection, transform=transform)
-    gmp.authenticate(GMP_USER, GMP_PASSWORD)
-    return gmp
 
+    with GMP(connection=connection, transform=transform) as gmp:
+        gmp.authenticate(GMP_USER, GMP_PASSWORD)
 
-def main():
-    with connect_gmp() as gmp:
         target_name = f"GA Target: {SCAN_TARGETS}"
         targets = gmp.get_targets(filter_string=f'name="{target_name}"')
         target_id = None
