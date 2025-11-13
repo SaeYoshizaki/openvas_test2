@@ -29,7 +29,7 @@ def main():
             resp = gmp.create_target(
                 name=target_name,
                 hosts=SCAN_TARGETS,
-                alive_tests="Consider Alive",
+                alive_test="Consider Alive",
             )
             target_id = resp.get("id")
 
