@@ -73,6 +73,7 @@ def main():
             f.write(xml_string)
         print("Saved:", outfile)
 
+# pushするためのメモです
 
 if __name__ == "__main__":
     main()
